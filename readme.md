@@ -7,8 +7,11 @@ Default frame duration to stay on screen without a new /roll occuring is `20 sec
 `/lootblare <number>`  
 Make the frame appear to move it with:  
 `/lootblare`
-
+* All credit to Ehawn of `Weird Vibes`. Thanks for making this addon.
 ### The (moveable) frame in game:  
 ![LootBlare Frame](./lootblareframe.png)  
 
-* This addon is made by and for `Weird Vibes` of Turtle WoW.  
+Small tweaks for the purposes of Farmers Market
+* Larger window displays 20 rolls
+* Sort rolls by the max roll
+* Color code based on max roll
