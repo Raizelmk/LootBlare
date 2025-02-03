@@ -1,4 +1,4 @@
-﻿local weird_vibes_mode = true
+﻿local weird_vibes_mode = false
 
 local function lb_print(msg)
   DEFAULT_CHAT_FRAME:AddMessage(msg)
@@ -52,7 +52,7 @@ end
 local function CreateItemRollFrame()
   local frame = CreateFrame("Frame", "ItemRollFrame", UIParent)
   frame:SetWidth(145) -- Adjust size as needed
-  frame:SetHeight(180)
+  frame:SetHeight(340) --Original 180 for 7 rolls
   frame:SetPoint("CENTER",UIParent,"CENTER",0,0) -- Position at center of the parent frame
   frame:SetBackdrop({
       bgFile = "Interface/Tooltips/UI-Tooltip-Background",
@@ -183,7 +183,7 @@ end
 
 local function CreateTextArea(frame)
   local textArea = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-  textArea:SetHeight(150) -- Size of the icon
+  textArea:SetHeight(250) -- Size of the icon
   textArea:SetPoint("TOP", frame, "TOP", 0, -80)
   textArea:SetJustifyH("LEFT")
   textArea:SetJustifyV("TOP")
@@ -198,15 +198,27 @@ local function UpdateTextArea(frame)
   end
 
   table.sort(rollMessages, function(a, b)
-    return a.roll > b.roll
+    if a.maxRoll == b.maxRoll then
+        return a.roll > b.roll
+    end
+    return a.maxRoll > b.maxRoll
   end)
 
   -- frame.textArea:SetTeClear()  -- Clear the existing messages
   local text = ""
   local count = 0
   for i, message in ipairs(rollMessages) do
-      if count >= 7 then break end
-      text = text .. message.msg .. "\n"
+      if count >= 20 then break end --Original  7
+      if message.maxRoll == 110 then
+        highlight = "|cffffd700" --gold
+      elseif message.maxRoll == 100 then
+        highlight = "|cff00ff00" --green
+      elseif message.maxRoll == 90 then
+        highlight = "|cff3540ff" --blue
+      else
+        highlight = "|cffe74c3c" --red
+      end
+      text = text .. highlight .. message.msg .. "\n"
       count = count + 1
   end
   frame.textArea:SetText(text)
@@ -250,7 +262,8 @@ local function HandleChatMessage(event, message, from)
       -- lb_print(roller .. " " .. roll .. " " .. minRoll .. " " .. maxRoll)
       if roller and roll then
           roll = tonumber(roll) -- Convert roll to a number
-          table.insert(rollMessages, { roller = roller, roll = roll, msg = message })
+          maxRoll = tonumber(maxRoll)
+          table.insert(rollMessages, { roller = roller, roll = roll, msg = message, maxRoll = maxRoll })
           time_elapsed = 0
           UpdateTextArea(itemRollFrame)
       end
